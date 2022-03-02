@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj",
+        "projectName": "aircannon",
+        "projectPath": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj",
+        "packagesPath": "C:\\Users\\Archie\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Archie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
+                "projectPath": "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
+        "projectName": "base",
+        "projectPath": "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
+        "packagesPath": "C:\\Users\\Archie\\.nuget\\packages\\",
+        "outputPath": "G:\\SteamLibrary\\steamapps\\common\\sbox\\addons\\base\\code\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Archie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
