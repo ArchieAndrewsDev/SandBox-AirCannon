@@ -2,36 +2,41 @@
 
 partial class AirCannonPlayer
 {
-	private void BecomeRagdollOnServer()
+	private void BecomeRagdollOnServer( Vector3 velocity, DamageFlags damageFlags, Vector3 forcePos, Vector3 force, int bone )
 	{
-		var ent = new ModelEntity();
-	}
+		if ( ragdollEntity != null )
+			return;
 
-	[ClientRpc]
-	private void BecomeRagdollOnClient( Vector3 velocity, DamageFlags damageFlags, Vector3 forcePos, Vector3 force, int bone )
-	{
-		var ent = new ModelEntity();
-		ent.Position = Position;
-		ent.Rotation = Rotation;
-		ent.Scale = Scale;
-		ent.MoveType = MoveType.Physics;
-		ent.UsePhysicsCollision = true;
-		ent.EnableAllCollisions = true;
-		ent.CollisionGroup = CollisionGroup.Debris;
-		ent.SetModel( GetModelName() );
-		ent.CopyBonesFrom( this );
-		ent.CopyBodyGroups( this );
-		ent.CopyMaterialGroup( this );
-		ent.TakeDecalsFrom( this );
-		ent.EnableHitboxes = true;
-		ent.EnableAllCollisions = true;
-		ent.SurroundingBoundsMode = SurroundingBoundsType.Physics;
-		ent.RenderColor = RenderColor;
-		ent.PhysicsGroup.Velocity = velocity;
+		isRagdolled = true;
+		EnableAllCollisions = false;
+		EnableDrawing = false;
+		Controller = new FlyingController();
+		CameraMode = new FollowRagdollCamera();
 
-		ent.SetInteractsAs( CollisionLayer.Debris );
-		ent.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
-		ent.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
+		ragdollEntity = new ModelEntity();
+		ragdollEntity.Position = Position;
+		ragdollEntity.Rotation = Rotation;
+		ragdollEntity.Scale = Scale;
+		ragdollEntity.MoveType = MoveType.Physics;
+		ragdollEntity.UsePhysicsCollision = true;
+		ragdollEntity.EnableAllCollisions = true;
+		ragdollEntity.CollisionGroup = CollisionGroup.Debris;
+		ragdollEntity.SetModel( GetModelName() );
+		ragdollEntity.CopyBonesFrom( this );
+		ragdollEntity.CopyBodyGroups( this );
+		ragdollEntity.CopyMaterialGroup( this );
+		ragdollEntity.TakeDecalsFrom( this );
+		ragdollEntity.EnableHitboxes = true;
+		ragdollEntity.EnableAllCollisions = true;
+		ragdollEntity.SurroundingBoundsMode = SurroundingBoundsType.Physics;
+		ragdollEntity.RenderColor = RenderColor;
+		ragdollEntity.PhysicsGroup.Velocity = velocity;
+
+		ragdollEntity.SetInteractsAs( CollisionLayer.Debris );
+		ragdollEntity.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
+		ragdollEntity.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
+
+		ragdollEntity.PhysicsBody.ApplyImpulse( force );
 
 		foreach ( var child in Children )
 		{
@@ -42,12 +47,13 @@ partial class AirCannonPlayer
 
 			var clothing = new ModelEntity();
 			clothing.SetModel( model );
-			clothing.SetParent( ent, true );
+			clothing.SetParent( ragdollEntity, true );
 			clothing.RenderColor = e.RenderColor;
 			clothing.CopyBodyGroups( e );
 			clothing.CopyMaterialGroup( e );
 		}
 
+		/*
 		if ( damageFlags.HasFlag( DamageFlags.Bullet ) ||
 			 damageFlags.HasFlag( DamageFlags.PhysicsImpact ) )
 		{
@@ -62,19 +68,18 @@ partial class AirCannonPlayer
 				ent.PhysicsGroup.ApplyImpulse( force );
 			}
 		}
+		*/
+	}
 
-		if ( damageFlags.HasFlag( DamageFlags.Blast ) )
-		{
-			if ( ent.PhysicsGroup != null )
-			{
-				ent.PhysicsGroup.AddVelocity( (Position - (forcePos + Vector3.Down * 100.0f)).Normal * (force.Length * 0.2f) );
-				var angularDir = (Rotation.FromYaw( 90 ) * force.WithZ( 0 ).Normal).Normal;
-				ent.PhysicsGroup.AddAngularVelocity( angularDir * (force.Length * 0.02f) );
-			}
-		}
+	private void GetUpFromRagDoll()
+	{
+		isRagdolled = false;
+		EnableAllCollisions = true;
+		EnableDrawing = true;
+		Controller = new WalkController();
+		CameraMode = new FirstPersonCamera();
 
-		Corpse = ent;
-
-		ent.DeleteAsync( 10.0f );
+		ragdollEntity.Delete();
+		ragdollEntity = null;
 	}
 }

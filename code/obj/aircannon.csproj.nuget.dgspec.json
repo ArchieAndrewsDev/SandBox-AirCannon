@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj": {}
+    "C:\\Users\\Archie\\Documents\\Repos\\SandBox-AirCannon\\code\\aircannon.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj": {
+    "C:\\Users\\Archie\\Documents\\Repos\\SandBox-AirCannon\\code\\aircannon.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj",
+        "projectUniqueName": "C:\\Users\\Archie\\Documents\\Repos\\SandBox-AirCannon\\code\\aircannon.csproj",
         "projectName": "aircannon",
-        "projectPath": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\aircannon.csproj",
+        "projectPath": "C:\\Users\\Archie\\Documents\\Repos\\SandBox-AirCannon\\code\\aircannon.csproj",
         "packagesPath": "C:\\Users\\Archie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Archie\\Documents\\Sandbox\\AirCannon\\code\\obj\\",
+        "outputPath": "C:\\Users\\Archie\\Documents\\Repos\\SandBox-AirCannon\\code\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Archie\\AppData\\Roaming\\NuGet\\NuGet.Config",
