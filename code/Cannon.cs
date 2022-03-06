@@ -91,7 +91,7 @@ public partial class Cannon : BaseWeapon
 
 					if(target != null )
 					{
-						target.HitWithForce( r.EndPosition, force );
+						target.HitWithForce( r.Direction, force );
 					}
 				}
 			}

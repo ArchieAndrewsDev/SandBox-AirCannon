@@ -1,7 +1,7 @@
 using Sandbox;
 using System;
 
-public class FollowRagdollCamera : CameraMode
+public class OrbitEntityCamera : CameraMode
 {
 	// should only need TargetRotation but I'm shit
 	public Angles TargetAngles;
@@ -14,7 +14,7 @@ public class FollowRagdollCamera : CameraMode
 	public float MaxDistance => 300.0f;
 	public float DistanceStep => 10.0f;
 
-	public Entity ragdoll => Entity;
+	public Entity player => Entity;
 
 	public override void Build( ref CameraSetup camSetup )
 	{
@@ -25,9 +25,9 @@ public class FollowRagdollCamera : CameraMode
 
 	public override void Update()
 	{
-		if ( !ragdoll.IsValid() ) return;
+		if ( !player.IsValid() ) return;
 
-		Position = ragdoll.Position + Vector3.Up * (24 * ragdoll.Scale);
+		Position = player.Position + Vector3.Up * (24 * player.Scale);
 		TargetRotation = Rotation.From( TargetAngles );
 
 		Rotation = Rotation.Slerp( Rotation, TargetRotation, RealTime.Delta * 10.0f );

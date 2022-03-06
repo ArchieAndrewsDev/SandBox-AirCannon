@@ -41,10 +41,6 @@ namespace Sandbox
 			player.Respawn();
 
 			client.Pawn = player;
-
-			var testPlayer = new AirCannonPlayer( client );
-			testPlayer.Respawn();
 		}
 	}
-
 }

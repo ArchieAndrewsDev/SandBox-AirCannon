@@ -3,9 +3,8 @@ using System;
 
 partial class AirCannonPlayer : Player
 {
-	private TimeSince timeSinceDropped;
-	private TimeSince timeSinceJumpReleased;
-	private ModelEntity ragdollEntity = null;
+	[Net]
+	private ModelEntity ragdollEntity { get; set; } = null;
 
 	[Net]
 	private bool isRagdolled { get; set; } = false;
@@ -60,12 +59,11 @@ partial class AirCannonPlayer : Player
 		base.Respawn();
 	}
 
-	public void HitWithForce(Vector3 position, Vector3 force )
+	public void HitWithForce(Vector3 direction, float force )
 	{
-		float magnitude = Magnitude(force);
-		if ( forceThreshold <= magnitude)
+		if ( forceThreshold <= force )
 		{
-			BecomeRagdollOnServer( Vector3.Zero, DamageFlags.Blast, position, force, 0 );
+			BecomeRagdollOnServer( Velocity, direction, force);
 		}
 	}
 
@@ -92,19 +90,10 @@ partial class AirCannonPlayer : Player
 			ActiveChild = Input.ActiveChild;
 		}
 
-		if(ragdollEntity != null && isRagdolled)
-		{
-			Position = ragdollEntity.Position;
-			var movement = new Vector3( Input.Forward, Input.Left, 0 ).Normal;
-			ragdollEntity.Velocity = movement * 1000;		
-		}
-
 		DebugTools();
 
 		if ( LifeState != LifeState.Alive || isRagdolled)
 			return;
-
-		Log.Warning( isRagdolled );
 
 		var controller = GetActiveController();
 		if ( controller != null )
@@ -112,21 +101,6 @@ partial class AirCannonPlayer : Player
 
 		TickPlayerUse();
 		SimulateActiveChild( cl, ActiveChild );
-
-		if ( Input.Released( InputButton.Jump ) )
-		{
-			if ( timeSinceJumpReleased < 0.3f )
-			{
-				Game.Current?.DoPlayerNoclip( cl );
-			}
-
-			timeSinceJumpReleased = 0;
-		}
-
-		if ( Input.Left != 0 || Input.Forward != 0 )
-		{
-			timeSinceJumpReleased = 1;
-		}
 	}
 
 	private void DebugTools()
@@ -153,16 +127,15 @@ partial class AirCannonPlayer : Player
 			}
 			else
 			{
-				HitWithForce( Position, Vector3.Up * 600 );
+				HitWithForce(EyeRotation.Forward, 1500);
 			}
 		}
-	}
 
-	public override void StartTouch( Entity other )
-	{
-		if ( timeSinceDropped < 1 ) return;
-
-		base.StartTouch( other );
+		if(IsServer && Input.Pressed( InputButton.Slot3 ) )
+		{
+			var testPlayer = new AirCannonPlayer( Client );
+			testPlayer.Respawn();
+		}
 	}
 
 	[ServerCmd( "inventory_current" )]

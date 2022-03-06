@@ -1,0 +1,5 @@
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.csproj.AssemblyReference.cache
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.AssemblyInfoInputs.cache
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.AssemblyInfo.cs
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.csproj.CoreCompileInputs.cache
