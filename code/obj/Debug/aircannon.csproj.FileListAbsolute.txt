@@ -3,3 +3,12 @@ C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.Gener
 C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.AssemblyInfoInputs.cache
 C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.AssemblyInfo.cs
 C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.csproj.CoreCompileInputs.cache
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\.vs\output\aircannon.xml
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\.vs\output\aircannon.deps.json
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\.vs\output\aircannon.dll
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\.vs\output\aircannon.pdb
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.csproj.CopyComplete
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.dll
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\refint\aircannon.dll
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\aircannon.pdb
+C:\Users\Archie\Documents\Repos\SandBox-AirCannon\code\obj\Debug\ref\aircannon.dll

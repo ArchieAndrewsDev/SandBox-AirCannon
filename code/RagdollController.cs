@@ -1,24 +1,45 @@
 using Sandbox;
 
-public class RagdollController : BasePlayerController
+public partial class RagdollController : BasePlayerController
 {
-	public PhysicsBody ragdoll;
+	[Net] private float BodyGirth { get; set; } = 32.0f;
+	[Net] private float BodyHeight { get; set; } = 72.0f;
+	[Net] private Vector3 startVelcoity { get; set; }
 
-	private float trackSpeed => 5;
+	public RagdollController()
+	{
+
+	}
+
+	public RagdollController( Vector3 newVelocity )
+	{
+		Log.Warning(newVelocity.ToString());
+		startVelcoity = newVelocity;
+	}
 
 	public override void Simulate()
 	{
-		base.Simulate();
+		Log.Warning( startVelcoity.ToString() );
 
-		if(ragdoll != null )
-		{
-			Vector3 velocity = ragdoll.Position - Position;
-			velocity *= trackSpeed;
-			MoveHelper mover = new MoveHelper(Position, velocity);
-			mover.TryMove( Time.Delta );
-			Position = mover.Position;
+		MoveHelper moveHelper = new MoveHelper(Position, Velocity);
+		moveHelper.Trace = moveHelper.Trace.Size( GetHull() ).Ignore( Pawn );
 
-			//Position = Vector3.Lerp( Position, mover.Position, RealTime.Delta * 20.0f );
-		}
+		moveHelper.TryMove( Time.Delta );
+
+		Position = moveHelper.Position;	
+		Velocity = moveHelper.Velocity;
+
+		WishVelocity = Velocity;
+		GroundEntity = null;
+		BaseVelocity = Vector3.Zero;
+	}
+
+	public override BBox GetHull()
+	{
+		var girth = BodyGirth * 0.5f;
+		var mins = new Vector3( -girth, -girth, 0 );
+		var maxs = new Vector3( +girth, +girth, BodyHeight );
+
+		return new BBox( mins, maxs );
 	}
 }

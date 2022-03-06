@@ -4,18 +4,7 @@ partial class AirCannonPlayer
 {
 	private void BecomeRagdollOnServer( Vector3 velocity, Vector3 direction, Vector3 force)
 	{
-		if ( ragdollEntity != null)
-			return;
-
-		isRagdolled = true;
-		EnableAllCollisions = false;
-		EnableShadowCasting = false;
-		EnableDrawing = false;
-		EnableViewmodelRendering = false;
-
-		ClientRagdoll();
-
-		ragdollEntity = new ModelEntity();
+		ModelEntity ragdollEntity = new ModelEntity();
 		ragdollEntity.Position = Position;
 		ragdollEntity.Rotation = Rotation;
 		ragdollEntity.Scale = Scale;
@@ -38,14 +27,7 @@ partial class AirCannonPlayer
 		ragdollEntity.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
 		ragdollEntity.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
 
-		RagdollController ragdollController = new RagdollController();
-		ragdollController.ragdoll = ragdollEntity.PhysicsBody;
-		Controller = ragdollController;
-
-		CameraMode = new OrbitEntityCamera();
-		CameraMode.Viewer = this;
-
-		Animator = null;
+		Corpse = ragdollEntity;
 
 		foreach ( var child in Children )
 		{
@@ -61,32 +43,5 @@ partial class AirCannonPlayer
 			clothing.CopyBodyGroups( e );
 			clothing.CopyMaterialGroup( e );
 		}
-	}
-
-	private void GetUpFromRagDoll()
-	{
-		isRagdolled = false;
-		EnableAllCollisions = true;
-		EnableDrawing = true;
-		Controller = new WalkController();
-		CameraMode = new FirstPersonCamera();
-		Animator = new StandardPlayerAnimator();
-
-		ragdollEntity.Delete();
-		ragdollEntity = null;
-
-		ClientGetUpFromRagdoll();
-	}
-
-	[ClientRpc]
-	private void ClientRagdoll()
-	{
-		CameraMode.Viewer = this;
-	}
-
-	[ClientRpc]
-	private void ClientGetUpFromRagdoll()
-	{
-		CameraMode.Viewer = null;
 	}
 }

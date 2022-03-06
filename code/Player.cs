@@ -3,12 +3,6 @@ using System;
 
 partial class AirCannonPlayer : Player
 {
-	[Net]
-	private ModelEntity ragdollEntity { get; set; } = null;
-
-	[Net]
-	private bool isRagdolled { get; set; } = false;
-
 	private float forceThreshold = 1;
 
 	/// <summary>
@@ -37,7 +31,7 @@ partial class AirCannonPlayer : Player
 	{
 		SetModel( "models/citizen/citizen.vmdl" );
 
-		Controller = new WalkController();
+		Controller = new AirCannonController();
 		Animator = new StandardPlayerAnimator();
 
 		if ( DevController is NoclipController )
@@ -61,10 +55,28 @@ partial class AirCannonPlayer : Player
 
 	public void HitWithForce(Vector3 direction, float force )
 	{
+		Controller.SetProperty( "IsRagdolled", "true" );
+		Controller.SetProperty("LaunchedVelocity", (direction * force).ToString());
+
 		if ( forceThreshold <= force )
 		{
-			BecomeRagdollOnServer( Velocity, direction, force);
+
+		/*
+			CameraMode = new RagdollCamera();
+
+			foreach ( var child in Children )
+			{
+				child.EnableDrawing = false;
+			}
+
+			LifeState = LifeState.Dying;
+		*/
 		}
+	}
+
+	private void GetUpFromRagdoll()
+	{
+		Controller.SetProperty( "IsRagdolled", "false" );
 	}
 
 	private float Magnitude(Vector3 vector)
@@ -92,7 +104,7 @@ partial class AirCannonPlayer : Player
 
 		DebugTools();
 
-		if ( LifeState != LifeState.Alive || isRagdolled)
+		if ( LifeState != LifeState.Alive)
 			return;
 
 		var controller = GetActiveController();
@@ -121,17 +133,15 @@ partial class AirCannonPlayer : Player
 
 		if ( IsServer && Input.Pressed( InputButton.Slot2 ) )
 		{
-			if ( isRagdolled )
-			{
-				GetUpFromRagDoll();
-			}
-			else
-			{
-				HitWithForce(EyeRotation.Forward, 1500);
-			}
+			HitWithForce( EyeRotation.Forward, 1500 );
 		}
 
-		if(IsServer && Input.Pressed( InputButton.Slot3 ) )
+		if ( IsServer && Input.Pressed( InputButton.Slot3 ) )
+		{
+			GetUpFromRagdoll();
+		}
+
+		if (IsServer && Input.Pressed( InputButton.Slot4 ) )
 		{
 			var testPlayer = new AirCannonPlayer( Client );
 			testPlayer.Respawn();
