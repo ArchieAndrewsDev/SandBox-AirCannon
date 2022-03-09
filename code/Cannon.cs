@@ -64,7 +64,7 @@ public partial class Cannon : BaseWeapon
 
 	public virtual void Shoot()
 	{
-		if ( true )
+		if ( IsServer )
 		{
 			Vector3 eyePosition = Client.Pawn.EyePosition;
 			Vector3 eyeForward = Client.Pawn.EyeRotation.Forward;

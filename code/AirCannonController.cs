@@ -35,6 +35,23 @@ public partial class AirCannonController : WalkController
 
 		BaseVelocity = BaseVelocity.WithZ( 0 );
 
-		wasRagdolled =IsRagdolled;
+		var point = Position - Vector3.Up * 2;
+		var vBumpOrigin = Position;
+
+		var pm = TraceBBox( vBumpOrigin, point, 4.0f );
+
+		if ( pm.Entity == null || Vector3.GetAngle( Vector3.Up, pm.Normal ) > GroundAngle )
+		{
+			ClearGroundEntity();
+
+			if ( Velocity.z > 0 )
+				SurfaceFriction = 0.25f;
+		}
+		else
+		{
+			UpdateGroundEntity( pm );
+		}
+
+		wasRagdolled = IsRagdolled;
 	}
 }

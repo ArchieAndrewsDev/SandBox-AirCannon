@@ -55,8 +55,9 @@ partial class AirCannonPlayer : Player
 
 	public void HitWithForce(Vector3 direction, float force )
 	{
+		Log.Warning( "WOOOOoooouuupppPPP" );
 		Controller.SetProperty( "IsRagdolled", "true" );
-		Controller.SetProperty("LaunchedVelocity", (direction * force).ToString());
+		Controller.SetProperty( "LaunchedVelocity", (direction * force).ToString() );
 
 		if ( forceThreshold <= force )
 		{
