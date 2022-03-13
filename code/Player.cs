@@ -55,36 +55,15 @@ partial class AirCannonPlayer : Player
 
 	public void HitWithForce(Vector3 direction, float force )
 	{
-		Log.Warning( "WOOOOoooouuupppPPP" );
-		Controller.SetProperty( "IsRagdolled", "true" );
-		Controller.SetProperty( "LaunchedVelocity", (direction * force).ToString() );
-
-		if ( forceThreshold <= force )
-		{
-
-		/*
-			CameraMode = new RagdollCamera();
-
-			foreach ( var child in Children )
-			{
-				child.EnableDrawing = false;
-			}
-
-			LifeState = LifeState.Dying;
-		*/
-		}
+		AirCannonController controller = Controller as AirCannonController;
+		controller.IsRagdolled = true;
+		controller.LaunchedVelocity = (direction * force);
 	}
 
 	private void GetUpFromRagdoll()
 	{
-		Controller.SetProperty( "IsRagdolled", "false" );
-	}
-
-	private float Magnitude(Vector3 vector)
-	{
-		float m = vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
-		m = MathF.Sqrt( m );
-		return m;
+		AirCannonController controller = Controller as AirCannonController;
+		controller.IsRagdolled = false;
 	}
 
 	public override PawnController GetActiveController()
@@ -140,12 +119,6 @@ partial class AirCannonPlayer : Player
 		if ( IsServer && Input.Pressed( InputButton.Slot3 ) )
 		{
 			GetUpFromRagdoll();
-		}
-
-		if (IsServer && Input.Pressed( InputButton.Slot4 ) )
-		{
-			var testPlayer = new AirCannonPlayer( Client );
-			testPlayer.Respawn();
 		}
 	}
 

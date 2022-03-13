@@ -1,7 +1,7 @@
 {
   "Title": "AirCannon",
   "Type": "game",
-  "Org": "local",
+  "Org": "aad",
   "Ident": "aircannon",
   "Schema": 1,
   "HasAssets": true,

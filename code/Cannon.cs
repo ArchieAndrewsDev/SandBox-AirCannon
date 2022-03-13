@@ -64,32 +64,34 @@ public partial class Cannon : BaseWeapon
 
 	public virtual void Shoot()
 	{
-		if ( IsServer )
+		Vector3 eyePosition = Client.Pawn.EyePosition;
+		Vector3 eyeForward = Client.Pawn.EyeRotation.Forward;
+
+		TraceResult[] tr = Trace.Ray( eyePosition, eyePosition + eyeForward * range )
+			.Radius( 10 )
+			.Ignore( this )
+			.RunAll();
+
+		foreach ( TraceResult r in tr )
 		{
-			Vector3 eyePosition = Client.Pawn.EyePosition;
-			Vector3 eyeForward = Client.Pawn.EyeRotation.Forward;
-
-			TraceResult[] tr = Trace.Ray( eyePosition, eyePosition + eyeForward * range )
-				.Radius( 10 )
-				.Ignore(this)
-				.RunAll();
-
-			foreach( TraceResult r in tr )
+			if ( r.Hit )
 			{
-				if ( r.Hit )
+				Vector3 impulse = Vector3.VectorPlaneProject( eyeForward, Vector3.Up ) * r.Body.Mass * force;
+				impulse += (Vector3.Up * r.Body.Mass * upForce);
+
+				if ( r.Body != null )
 				{
-					Vector3 impulse = Vector3.VectorPlaneProject( eyeForward, Vector3.Up ) * r.Body.Mass * force;
-					impulse += (Vector3.Up * r.Body.Mass * upForce);
+					r.Body.ApplyImpulse( impulse );
+					DebugOverlay.TraceResult( r );
+				}
 
-					if (r.Body != null)
-					{
-						r.Body.ApplyImpulse( impulse );
-						DebugOverlay.TraceResult( r );
-					}
+				if ( !IsServer ) continue;
 
+				using ( Prediction.Off() )
+				{
 					AirCannonPlayer target = r.Entity as AirCannonPlayer;
 
-					if(target != null )
+					if ( target != null )
 					{
 						target.HitWithForce( r.Direction, force );
 					}
