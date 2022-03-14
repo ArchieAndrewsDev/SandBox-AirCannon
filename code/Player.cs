@@ -4,6 +4,10 @@ using System;
 partial class AirCannonPlayer : Player
 {
 	private float forceThreshold = 1;
+	private bool isRagdolled = false;
+
+	private float ragdolledTime;
+	private float minDollTime => 2f;
 
 	/// <summary>
 	/// The clothing container is what dresses the citizen
@@ -55,15 +59,34 @@ partial class AirCannonPlayer : Player
 
 	public void HitWithForce(Vector3 direction, float force )
 	{
-		AirCannonController controller = Controller as AirCannonController;
-		controller.IsRagdolled = true;
-		controller.LaunchedVelocity = (direction * force);
+		isRagdolled = true;
+		ragdolledTime = Time.Now;
+
+		if ( Controller is AirCannonController airCannonController )
+		{
+			Log.Warning("Hit");
+			airCannonController.IsRagdolled = true;
+			airCannonController.LaunchedVelocity = (direction * force);
+
+			CameraMode = new RagdollCamera();
+		}
+
+		BecomeRagdollOnClient( this );
 	}
 
 	private void GetUpFromRagdoll()
 	{
-		AirCannonController controller = Controller as AirCannonController;
-		controller.IsRagdolled = false;
+		isRagdolled = false;
+
+		if ( Controller is AirCannonController airCannonController )
+		{
+			airCannonController.IsRagdolled = false;
+
+			CameraMode = new FirstPersonCamera();
+		}
+
+		if(Corpse != null)
+			Corpse.Delete();
 	}
 
 	public override PawnController GetActiveController()
@@ -93,6 +116,16 @@ partial class AirCannonPlayer : Player
 
 		TickPlayerUse();
 		SimulateActiveChild( cl, ActiveChild );
+
+		if ( isRagdolled )
+		{
+			//Detect getting out of ragdoll
+			if ( controller.GroundEntity != null && (Time.Now - ragdolledTime) >= minDollTime )
+				GetUpFromRagdoll();
+
+			if ( Corpse != null )
+				Corpse.PhysicsBody.Velocity = Position - Corpse.Position;
+		}
 	}
 
 	private void DebugTools()

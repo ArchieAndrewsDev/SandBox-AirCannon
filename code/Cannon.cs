@@ -62,6 +62,11 @@ public partial class Cannon : BaseWeapon
 		}
 	}
 
+	public override void Simulate( Client player )
+	{
+		base.Simulate( player );
+	}
+
 	public virtual void Shoot()
 	{
 		Vector3 eyePosition = Client.Pawn.EyePosition;
@@ -86,12 +91,14 @@ public partial class Cannon : BaseWeapon
 				}
 
 				if ( !IsServer ) continue;
+				if ( !r.Entity.IsValid() ) continue;
 
+				//
+				// We turn predictiuon off for this, so any exploding effects don't get culled etc
+				//
 				using ( Prediction.Off() )
 				{
-					AirCannonPlayer target = r.Entity as AirCannonPlayer;
-
-					if ( target != null )
+					if ( r.Entity is AirCannonPlayer target && target != null )
 					{
 						target.HitWithForce( r.Direction, force );
 					}

@@ -2,7 +2,8 @@
 
 partial class AirCannonPlayer
 {
-	private void BecomeRagdollOnServer( Vector3 velocity, Vector3 direction, Vector3 force)
+	[ClientRpc]
+	private void BecomeRagdollOnClient( Entity newParent)
 	{
 		ModelEntity ragdollEntity = new ModelEntity();
 		ragdollEntity.Position = Position;
@@ -21,7 +22,6 @@ partial class AirCannonPlayer
 		ragdollEntity.EnableAllCollisions = true;
 		ragdollEntity.SurroundingBoundsMode = SurroundingBoundsType.Physics;
 		ragdollEntity.RenderColor = RenderColor;
-		ragdollEntity.PhysicsGroup.Velocity = velocity + (direction * force);
 
 		ragdollEntity.SetInteractsAs( CollisionLayer.Player );
 		ragdollEntity.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );

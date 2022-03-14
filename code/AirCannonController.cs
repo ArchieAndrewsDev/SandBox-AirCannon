@@ -6,9 +6,6 @@ public partial class AirCannonController : WalkController
 	[Net]public Vector3 LaunchedVelocity { get; set; } = Vector3.Zero;
 
 	private bool wasRagdolled = false;
-	private float ragdolledTime;
-
-	private float minDollTime => 2f;
 
 	public AirCannonController()
 	{
@@ -17,7 +14,7 @@ public partial class AirCannonController : WalkController
 
 	public override void Simulate()
 	{
-		Log.Warning( string.Format("{0} - {1}", Position, IsRagdolled) ) ;
+		//Log.Warning( string.Format("{0} - {1}", Position, IsRagdolled) ) ;
 
 		if ( !IsRagdolled )
 		{
@@ -25,9 +22,9 @@ public partial class AirCannonController : WalkController
 		}
 		else if ( wasRagdolled == false && IsRagdolled == true)
 		{
+			Log.Warning("Start Ragdoll");
 			ClearGroundEntity();
 			Velocity = LaunchedVelocity;
-			ragdolledTime = Time.Now;
 		}
 		else
 		{
@@ -50,10 +47,9 @@ public partial class AirCannonController : WalkController
 				if ( Velocity.z > 0 )
 					SurfaceFriction = 0.25f;
 			}
-			else if ( (Time.Now - ragdolledTime) >= minDollTime )
+			else
 			{
 				UpdateGroundEntity( pm );
-				IsRagdolled = false;
 			}
 		}
 
