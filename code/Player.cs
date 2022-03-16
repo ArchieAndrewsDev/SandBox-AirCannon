@@ -9,6 +9,8 @@ partial class AirCannonPlayer : Player
 	private float ragdolledTime;
 	private float minDollTime => 2f;
 
+	private float ragdollCorrectionSpeed = 40;
+
 	/// <summary>
 	/// The clothing container is what dresses the citizen
 	/// </summary>
@@ -62,21 +64,34 @@ partial class AirCannonPlayer : Player
 		isRagdolled = true;
 		ragdolledTime = Time.Now;
 
+		EnableDrawing = false;
+
+		foreach ( var child in Children )
+		{
+			child.EnableDrawing = false;
+		}
+
 		if ( Controller is AirCannonController airCannonController )
 		{
-			Log.Warning("Hit");
 			airCannonController.IsRagdolled = true;
 			airCannonController.LaunchedVelocity = (direction * force);
 
 			CameraMode = new RagdollCamera();
 		}
 
-		BecomeRagdollOnClient( this );
+		BecomeRagdollOnClient( force );
 	}
 
 	private void GetUpFromRagdoll()
 	{
 		isRagdolled = false;
+
+		EnableDrawing = true;
+
+		foreach ( var child in Children )
+		{
+			child.EnableDrawing = true;
+		}
 
 		if ( Controller is AirCannonController airCannonController )
 		{
@@ -85,8 +100,7 @@ partial class AirCannonPlayer : Player
 			CameraMode = new FirstPersonCamera();
 		}
 
-		if(Corpse != null)
-			Corpse.Delete();
+		CleaRagdoll();
 	}
 
 	public override PawnController GetActiveController()
@@ -122,9 +136,17 @@ partial class AirCannonPlayer : Player
 			//Detect getting out of ragdoll
 			if ( controller.GroundEntity != null && (Time.Now - ragdolledTime) >= minDollTime )
 				GetUpFromRagdoll();
+		}
+	}
 
-			if ( Corpse != null )
-				Corpse.PhysicsBody.Velocity = Position - Corpse.Position;
+	public override void FrameSimulate( Client cl )
+	{
+		base.FrameSimulate( cl );
+
+		if ( Corpse != null )
+		{
+			Vector3 direction = Position - Corpse.PhysicsBody.Position + Vector3.Up;
+			Corpse.PhysicsBody.Velocity = Velocity + direction * ragdollCorrectionSpeed;
 		}
 	}
 
@@ -146,7 +168,7 @@ partial class AirCannonPlayer : Player
 
 		if ( IsServer && Input.Pressed( InputButton.Slot2 ) )
 		{
-			HitWithForce( EyeRotation.Forward, 1500 );
+			HitWithForce(EyeRotation.Forward, 1500 );
 		}
 
 		if ( IsServer && Input.Pressed( InputButton.Slot3 ) )

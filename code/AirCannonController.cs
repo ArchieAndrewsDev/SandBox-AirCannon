@@ -1,4 +1,5 @@
 using Sandbox;
+using System;
 
 public partial class AirCannonController : WalkController
 {
@@ -11,6 +12,14 @@ public partial class AirCannonController : WalkController
 	{
 
 	}
+
+	private float Magnitude( Vector3 vector )
+	{
+		float m = vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
+		m = MathF.Sqrt( m );
+		return m;
+	}
+
 
 	public override void Simulate()
 	{

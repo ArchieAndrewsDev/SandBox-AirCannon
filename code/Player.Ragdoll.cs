@@ -3,7 +3,7 @@
 partial class AirCannonPlayer
 {
 	[ClientRpc]
-	private void BecomeRagdollOnClient( Entity newParent)
+	private void BecomeRagdollOnClient( Vector3 force )
 	{
 		ModelEntity ragdollEntity = new ModelEntity();
 		ragdollEntity.Position = Position;
@@ -43,5 +43,18 @@ partial class AirCannonPlayer
 			clothing.CopyBodyGroups( e );
 			clothing.CopyMaterialGroup( e );
 		}
+
+		if ( ragdollEntity.PhysicsGroup != null )
+		{
+			var angularDir = (Rotation.FromYaw( 90 ) * force.WithZ( 0 ).Normal).Normal;
+			ragdollEntity.PhysicsGroup.AddAngularVelocity( angularDir * (force.Length * 0.02f) );
+		}
+	}
+
+	[ClientRpc]
+	private void CleaRagdoll()
+	{
+		Corpse.Delete();
+		Corpse = null;
 	}
 }
