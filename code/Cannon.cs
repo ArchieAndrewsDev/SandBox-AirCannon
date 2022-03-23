@@ -72,6 +72,7 @@ public partial class Cannon : BaseWeapon
 		Vector3 eyePosition = Client.Pawn.EyePosition;
 		Vector3 eyeForward = Client.Pawn.EyeRotation.Forward;
 
+		//Trace everything in the path of the air blast
 		TraceResult[] tr = Trace.Ray( eyePosition, eyePosition + eyeForward * range )
 			.Radius( 10 )
 			.Ignore( this )
@@ -81,9 +82,13 @@ public partial class Cannon : BaseWeapon
 		{
 			if ( r.Hit )
 			{
-				Vector3 impulse = Vector3.VectorPlaneProject( eyeForward, Vector3.Up ) * r.Body.Mass * force;
+				//The force which we apply to the target
+				Vector3 impulse = eyeForward * r.Body.Mass * force;
+
+				//Add some up force to take the player off the ground
 				impulse += (Vector3.Up * r.Body.Mass * upForce);
 
+				//If we find a standard physics body apply force to it
 				if ( r.Body != null )
 				{
 					r.Body.ApplyImpulse( impulse );
@@ -93,14 +98,12 @@ public partial class Cannon : BaseWeapon
 				if ( !IsServer ) continue;
 				if ( !r.Entity.IsValid() ) continue;
 
-				//
-				// We turn predictiuon off for this, so any exploding effects don't get culled etc
-				//
 				using ( Prediction.Off() )
 				{
+					//Hit AirCannonPlayers with a force to start the ragdoll
 					if ( r.Entity is AirCannonPlayer target && target != null )
 					{
-						target.HitWithForce( r.Direction, force );
+						target.HitWithForce( impulse );
 					}
 				}
 			}

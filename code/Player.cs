@@ -3,13 +3,10 @@ using System;
 
 partial class AirCannonPlayer : Player
 {
-	private float forceThreshold = 1;
-	private bool isRagdolled = false;
-
-	private float ragdolledTime;
-	private float minDollTime => 2f;
-
-	private float ragdollCorrectionSpeed = 40;
+	private bool isRagdolled = false; 
+	private float ragdolledTime; //Time since player was ragdolled
+	private float minDollTime = 2f; //The min time that the player can be ragdolled 
+	private float ragdollCorrectionSpeed = 40; //The speed that the ragdoll moves towards the players position
 
 	/// <summary>
 	/// The clothing container is what dresses the citizen
@@ -35,6 +32,7 @@ partial class AirCannonPlayer : Player
 
 	public override void Respawn()
 	{
+		//Load character model
 		SetModel( "models/citizen/citizen.vmdl" );
 
 		Controller = new AirCannonController();
@@ -50,6 +48,7 @@ partial class AirCannonPlayer : Player
 		EnableHideInFirstPerson = true;
 		EnableShadowInFirstPerson = true;
 
+		//Dress Terry in his drip
 		Clothing.DressEntity( this );
 
 		CameraMode = new FirstPersonCamera();
@@ -59,33 +58,37 @@ partial class AirCannonPlayer : Player
 		base.Respawn();
 	}
 
-	public void HitWithForce(Vector3 direction, float force )
+	public void HitWithForce(Vector3 force )
 	{
 		isRagdolled = true;
+		//Store time of ragdoll to ensure players don't get up to fast
 		ragdolledTime = Time.Now;
 
+		//Disable character model so only ragdoll is visible
 		EnableDrawing = false;
 
+		//Stop drawing children (Weapons)
 		foreach ( var child in Children )
 		{
 			child.EnableDrawing = false;
 		}
 
+		//Grab the AirCannonController from Controller and tell it we have ragdolled. 
 		if ( Controller is AirCannonController airCannonController )
 		{
 			airCannonController.IsRagdolled = true;
-			airCannonController.LaunchedVelocity = (direction * force);
+			airCannonController.LaunchedVelocity = (force);
 
 			CameraMode = new RagdollCamera();
 		}
 
+		//Create a local ragdoll and attatch it to the player
 		BecomeRagdollOnClient( force );
 	}
 
 	private void GetUpFromRagdoll()
 	{
 		isRagdolled = false;
-
 		EnableDrawing = true;
 
 		foreach ( var child in Children )
@@ -114,15 +117,13 @@ partial class AirCannonPlayer : Player
 	{
 		base.Simulate( cl );
 
+		//Some hotkeys to test functions
+		DebugTools();
+
 		if ( Input.ActiveChild != null )
 		{
 			ActiveChild = Input.ActiveChild;
 		}
-
-		DebugTools();
-
-		if ( LifeState != LifeState.Alive)
-			return;
 
 		var controller = GetActiveController();
 		if ( controller != null )
@@ -137,17 +138,21 @@ partial class AirCannonPlayer : Player
 			if ( controller.GroundEntity != null && (Time.Now - ragdolledTime) >= minDollTime )
 				GetUpFromRagdoll();
 		}
+
+		//Get each client to move the ragdoll to the players position
+		if ( IsClient )
+		{
+			if ( Corpse != null )
+			{
+				Vector3 direction = Position - Corpse.PhysicsBody.Position + Vector3.Up;
+				Corpse.PhysicsBody.Velocity = Velocity + direction * ragdollCorrectionSpeed;
+			}
+		}
 	}
 
 	public override void FrameSimulate( Client cl )
 	{
 		base.FrameSimulate( cl );
-
-		if ( Corpse != null )
-		{
-			Vector3 direction = Position - Corpse.PhysicsBody.Position + Vector3.Up;
-			Corpse.PhysicsBody.Velocity = Velocity + direction * ragdollCorrectionSpeed;
-		}
 	}
 
 	private void DebugTools()
@@ -168,7 +173,7 @@ partial class AirCannonPlayer : Player
 
 		if ( IsServer && Input.Pressed( InputButton.Slot2 ) )
 		{
-			HitWithForce(EyeRotation.Forward, 1500 );
+			HitWithForce(EyeRotation.Forward * 1500 + Vector3.Up * 100 );
 		}
 
 		if ( IsServer && Input.Pressed( InputButton.Slot3 ) )
